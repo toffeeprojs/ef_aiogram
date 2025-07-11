@@ -1,31 +1,16 @@
-from aiogram import Bot, Dispatcher, html
+from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
-from aiogram.types import Message
+from aiogram.fsm.storage.redis import RedisStorage
+from redis.asyncio.client import Redis
 
-dp = Dispatcher()
-
-
-@dp.message(CommandStart())
-async def command_start_handler(message: Message) -> None:
-    await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!")
+from .handlers import routes
 
 
-@dp.message()
-async def echo_handler(message: Message) -> None:
-    try:
-        await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        await message.answer("Nice try!")
+async def main(token: str, redis_host: str) -> None:
+    dp = Dispatcher(storage=RedisStorage(redis=Redis(host=redis_host), state_ttl=172_800))
+    dp.include_routers(routes)
 
-
-async def main(token: str) -> None:
-    bot = Bot(
-        token=token,
-        default=DefaultBotProperties(
-            parse_mode=ParseMode.HTML
-        )
+    await dp.start_polling(
+        Bot(token=token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     )
-
-    await dp.start_polling(bot)

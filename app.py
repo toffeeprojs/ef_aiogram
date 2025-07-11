@@ -1,13 +1,12 @@
+from os import environ
 import asyncio
-from os import getenv
-
 from src.main import main
 
-if __name__ == "__main__":
-    TOKEN = getenv("TELEGRAM_BOT_TOKEN")
 
-    if TOKEN:
-        asyncio.run(main(TOKEN))
-    else:
-        print(TOKEN)
-        raise EnvironmentError
+if __name__ == "__main__":
+    asyncio.run(
+        main(
+            token=environ["TELEGRAM_BOT_TOKEN"],
+            redis_host=environ["REDIS_HOST"],
+        )
+    )

@@ -1,14 +1,17 @@
 from aiogram import Router, F
 from aiogram.enums import ChatType
 
-from .common import routes as commons
-from .regist import route as regis
+from .common import routers as commons
+from .main import router as main
+from .post import router as post
+from .regist import router as regist
 
-routes = Router()
-routes.message.filter(F.chat.type == ChatType.PRIVATE)
+router = Router()
+router.message.filter(F.chat.type == ChatType.PRIVATE)
+router.callback_query.filter(F.message)
 
-routes.include_routers(*commons, regis)
+router.include_routers(*commons, main, post, regist)
 
 __all__ = [
-    "routes"
+    "router"
 ]

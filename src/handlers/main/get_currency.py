@@ -1,21 +1,34 @@
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
-from aiogram.types import (
-    Message,
-    Location,
-    ReplyKeyboardRemove
-)
+from aiogram.types import CallbackQuery
 
 from src.states import Main
+from src.callbacks.currency import (
+    CurrencyCallback,
+    CurrencyAction,
+    currency_keyboard
+)
 
-route = Router()
+router = Router()
 
-@route.message(F.location.as_("location"))
-async def location_setting(message: Message, state: FSMContext, location: Location):
-    await state.set_state(Main.getCurrency)
-    await message.answer(f"{location.latitude}, {location.longitude}", reply_markup=ReplyKeyboardRemove())
+
+@router.callback_query(
+    CurrencyCallback.filter(
+        F.action == CurrencyAction.get
+    )
+)
+async def get_currency(callback_query: CallbackQuery, callback_data: CurrencyCallback, state: FSMContext):
+    await state.set_state(Main.giveCurrency)
+    await callback_query.message.answer(
+        f"{callback_data.currency_name}",
+        reply_markup=currency_keyboard(
+            CurrencyAction.give
+        )
+    )
+
+    await callback_query.answer()
 
 
 __all__ = [
-    "route"
+    "router"
 ]

@@ -2,13 +2,15 @@ from aiogram import Router
 from aiogram.filters import StateFilter
 
 from src.states import Regis
-from .location_setting import route as location_setting
 
-route = Router()
-route.message.filter(StateFilter(Regis.locationSetting))
+from .location_setting import router as location_setting
+from .any_message import router as any_message
 
-route.include_router(location_setting)
+router = Router()
+router.message.filter(StateFilter(Regis.locationSetting))
+
+router.include_routers(location_setting, any_message)
 
 __all__ = [
-    "route"
+    "router"
 ]

@@ -1,10 +1,13 @@
 from aiogram import Router
 
-from .admin import routers as admins
-from .start import route as start
+from .start import router as start
 
-routers: list[Router] = [*admins, start]
+
+router = Router()
+
+router.include_routers(start)
+
 
 __all__ = [
-    "routers"
+    "router"
 ]

@@ -1,16 +1,34 @@
-from aiogram import Router, F
-from aiogram.enums import ChatType
+from aiogram import Router
 
-from .common import routers as commons
+from src.middlewares import NoMessageMiddleware
+from src.states import ExchangesList, ExchangesCreate
+from .admin import router as admin
+from .common import router as common
+from .exchanges import router as exchanges
 from .main import router as main
-from .post import router as post
-from .regist import router as regist
+from .registration import router as registration
+from .settings import router as settings
+
 
 router = Router()
-router.message.filter(F.chat.type == ChatType.PRIVATE)
-router.callback_query.filter(F.message)
+router.message.middleware(
+    NoMessageMiddleware([
+        ExchangesList.get,
+        ExchangesList.give,
+        ExchangesCreate.rate,
+        ExchangesCreate.comment
+    ])
+)
 
-router.include_routers(*commons, main, post, regist)
+router.include_routers(
+    admin,
+    common,
+    exchanges,
+    main,
+    registration,
+    settings
+)
+
 
 __all__ = [
     "router"

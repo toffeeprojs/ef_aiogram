@@ -1,13 +1,33 @@
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import State, StatesGroup
 
 
-class Regis(StatesGroup):
-    locationSetting = State()
+class Registration(StatesGroup):
+    location = State()
+
 
 class Main(StatesGroup):
-    getCurrency = State()
-    giveCurrency = State()
+    menu = State()
 
-class Post(StatesGroup):
-    rateSetting = State()
-    commentSettings = State()
+
+class ExchangesList(StatesGroup):
+    get = State()
+    give = State()
+
+
+class ExchangesCreate(StatesGroup):
+    rate = State()
+    comment = State()
+
+
+class Settings(StatesGroup):
+    view = State()
+    display_name = State()
+
+
+__all__ = [
+    "Registration",
+    "Main",
+    "ExchangesList",
+    "ExchangesCreate",
+    "Settings",
+]

@@ -1,7 +1,0 @@
-from aiogram import Router
-
-routers: list[Router] = []
-
-__all__ = [
-    "routers"
-]
